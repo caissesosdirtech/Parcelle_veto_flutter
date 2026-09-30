@@ -1,0 +1,12 @@
+# Remplacez la ligne 1 par ceci :
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  exclude: [build/**, third_party/**, test/version_check/**]
+  language:
+    strict-raw-types: true
+
+linter:
+  rules:
+    prefer_final_locals: true
+    prefer_const_declarations: true

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "128011791124",
+    "project_id": "parcelles-veto",
+    "storage_bucket": "parcelles-veto.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:128011791124:android:137c34f1b0d2e694ce3001",
+        "android_client_info": {
+          "package_name": "com.example.parcelles_veto"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAaujUcektS6oiPhLNLyh0JVqnDNxsXND8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:128011791124:android:d6aad021831634e4ce3001",
+        "android_client_info": {
+          "package_name": "com.example.parcelles_veto_flutter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAaujUcektS6oiPhLNLyh0JVqnDNxsXND8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
