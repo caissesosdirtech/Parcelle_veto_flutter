@@ -1,3 +1,4 @@
+import 'package:parcelles_veto_flutter/core/api/api_client.dart';
 import 'package:parcelles_veto_flutter/core/config/api_config.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
@@ -16,7 +17,7 @@ class _ConsultationsScreenState extends State<ConsultationsScreen> {
   static const primary = Color(0xFF1976D2);
   static const primaryDark = Color(0xFF0D47A1);
 
-  final Dio _dio = Dio(BaseOptions(
+  final Dio _dio = ApiClient.authentifie(BaseOptions(
     baseUrl: ApiConfig.baseUrl,
     connectTimeout: const Duration(seconds: 20),
     receiveTimeout: const Duration(seconds: 20),
@@ -232,7 +233,7 @@ class _ConsultationsScreenState extends State<ConsultationsScreen> {
             onTap: () => Navigator.pop(context),
             child: Container(
               padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(color: Colors.white.withOpacity(0.15), borderRadius: BorderRadius.circular(8)),
+              decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(8)),
               child: const Icon(Icons.arrow_back, color: Colors.white, size: 18),
             ),
           ),
@@ -249,7 +250,7 @@ class _ConsultationsScreenState extends State<ConsultationsScreen> {
             onTap: _loadConsultations,
             child: Container(
               padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(color: Colors.white.withOpacity(0.15), borderRadius: BorderRadius.circular(8)),
+              decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(8)),
               child: const Icon(Icons.refresh, color: Colors.white, size: 18),
             ),
           ),
@@ -406,7 +407,7 @@ class _ConsultationsScreenState extends State<ConsultationsScreen> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: isTerminee ? Colors.blue.withOpacity(0.1) : Colors.orange.shade50,
+                          color: isTerminee ? Colors.blue.withValues(alpha: 0.1) : Colors.orange.shade50,
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(color: isTerminee ? primary : Colors.orange),
                         ),
@@ -597,7 +598,7 @@ class _NouvelleConsultationModalState extends State<_NouvelleConsultationModal> 
       try {
         final res2 = await widget.dio.get("clients/api/");
         final dynamic data2 = res2.data;
-        List<dynamic> list2 = data2 is List ? data2 : (data2['results'] ?? []);
+        final List<dynamic> list2 = data2 is List ? data2 : (data2['results'] ?? []);
         if (mounted) {
           setState(() {
             clients = list2;
@@ -631,7 +632,7 @@ class _NouvelleConsultationModalState extends State<_NouvelleConsultationModal> 
 
     setState(() => isSubmitting = true);
 
-    Map<String, dynamic> payload = {
+    final Map<String, dynamic> payload = {
       'mode': isExistingMode ? "existant" : "nouveau",
       'motif': motifCtrl.text.trim(),
       'observations': obsCtrl.text.trim(),
@@ -673,7 +674,7 @@ class _NouvelleConsultationModalState extends State<_NouvelleConsultationModal> 
     }
 
     try {
-      Response res = await widget.dio.post(
+      final Response<dynamic> res = await widget.dio.post(
         "consultations/api/ajouter/",
         data: payload,
       );
@@ -1161,4 +1162,4 @@ class _NouvelleConsultationModalState extends State<_NouvelleConsultationModal> 
       ),
     );
   }
-}
+}

@@ -1,3 +1,4 @@
+import 'package:parcelles_veto_flutter/core/api/api_client.dart';
 import 'package:parcelles_veto_flutter/core/config/api_config.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
@@ -15,7 +16,7 @@ class _VenteDetailBottomSheetState extends State<VenteDetailBottomSheet> {
   static const primary = Color(0xFF2E7D4F);
   static const primaryDark = Color(0xFF1B4D2E);
 
-  final Dio _dio = Dio(BaseOptions(
+  final Dio _dio = ApiClient.authentifie(BaseOptions(
     baseUrl: ApiConfig.baseUrl,
     connectTimeout: const Duration(seconds: 10),
     receiveTimeout: const Duration(seconds: 10),
@@ -52,7 +53,7 @@ class _VenteDetailBottomSheetState extends State<VenteDetailBottomSheet> {
   }
 
   /// Extrait le nom du client, où qu'il soit dans la structure JSON.
-  String _getClientNom(Map venteMap) {
+  String _getClientNom(Map<dynamic, dynamic> venteMap) {
     if (venteMap['client_nom'] != null) return venteMap['client_nom'].toString();
     if (venteMap['client_name'] != null) return venteMap['client_name'].toString();
     if (venteMap['client'] is Map) {
@@ -70,7 +71,7 @@ class _VenteDetailBottomSheetState extends State<VenteDetailBottomSheet> {
     return '';
   }
 
-  String _getClientTel(Map venteMap) {
+  String _getClientTel(Map<dynamic, dynamic> venteMap) {
     if (venteMap['client_tel'] != null) return venteMap['client_tel'].toString();
     if (venteMap['telephone'] != null) return venteMap['telephone'].toString();
     if (venteMap['client'] is Map) {
@@ -80,7 +81,7 @@ class _VenteDetailBottomSheetState extends State<VenteDetailBottomSheet> {
     return '';
   }
 
-  String _getAnimalNom(Map venteMap) {
+  String _getAnimalNom(Map<dynamic, dynamic> venteMap) {
     if (venteMap['animal_nom'] != null) return venteMap['animal_nom'].toString();
     if (venteMap['animal'] is Map) return (venteMap['animal']['nom'] ?? '').toString();
     if (venteMap['ordonnance'] is Map) {
@@ -92,7 +93,7 @@ class _VenteDetailBottomSheetState extends State<VenteDetailBottomSheet> {
     return '';
   }
 
-  bool _venteLieeAOrdonnance(Map venteMap) {
+  bool _venteLieeAOrdonnance(Map<dynamic, dynamic> venteMap) {
     return venteMap['ordonnance'] != null || venteMap['ordonnance_id'] != null || venteMap['consultation_id'] != null;
   }
 
@@ -396,4 +397,4 @@ class _VenteDetailBottomSheetState extends State<VenteDetailBottomSheet> {
       ],
     );
   }
-}
+}

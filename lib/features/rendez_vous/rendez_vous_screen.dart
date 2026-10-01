@@ -1,3 +1,4 @@
+import 'package:parcelles_veto_flutter/core/api/api_client.dart';
 import 'package:parcelles_veto_flutter/core/config/api_config.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
@@ -14,7 +15,7 @@ class _RendezVousScreenState extends State<RendezVousScreen> {
   static const primary = Color(0xFF1976D2);
   static const primaryDark = Color(0xFF0D47A1);
 
-  final Dio _dio = Dio(BaseOptions(
+  final Dio _dio = ApiClient.authentifie(BaseOptions(
     baseUrl: ApiConfig.baseUrl,
     connectTimeout: const Duration(seconds: 15),
     receiveTimeout: const Duration(seconds: 15),
@@ -131,8 +132,8 @@ class _RendezVousScreenState extends State<RendezVousScreen> {
   bool _isRendezVousPassed(String dateRaw) {
     if (dateRaw.isEmpty) return false;
     try {
-      String cleanedDate = dateRaw.contains(' à ') ? dateRaw.replaceAll(' à ', 'T') : dateRaw;
-      DateTime rdvDate = DateTime.parse(cleanedDate);
+      final String cleanedDate = dateRaw.contains(' à ') ? dateRaw.replaceAll(' à ', 'T') : dateRaw;
+      final DateTime rdvDate = DateTime.parse(cleanedDate);
       return DateTime.now().isAfter(rdvDate);
     } catch (e) {
       return false;
@@ -175,7 +176,7 @@ class _RendezVousScreenState extends State<RendezVousScreen> {
     final motifCtrl = TextEditingController();
     DateTime selectedDate = DateTime.now();
     TimeOfDay selectedTime = TimeOfDay.now();
-    String lieu = 'cabinet';
+    final String lieu = 'cabinet';
 
     showModalBottomSheet(
       context: context,
@@ -345,14 +346,14 @@ class _RendezVousScreenState extends State<RendezVousScreen> {
                               'statut': 'EN_ATTENTE',
                             });
 
-                            if (mounted) {
-                              Navigator.pop(ctx);
-                              _loadRendezVous();
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Rendez-vous programmé avec succès !')),
-                              );
-                            }
+                            if (ctx.mounted) Navigator.pop(ctx);
+                            if (!mounted) return;
+                            _loadRendezVous();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Rendez-vous programmé avec succès !')),
+                            );
                           } catch (e) {
+                            if (!mounted) return;
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text('Erreur d\'ajout : $e'), backgroundColor: Colors.red),
                             );
@@ -549,7 +550,7 @@ class _RendezVousScreenState extends State<RendezVousScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: statusColor.withOpacity(0.15),
+                  color: statusColor.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
@@ -618,7 +619,7 @@ class _RendezVousScreenState extends State<RendezVousScreen> {
             Container(
               padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
               decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(0.1),
+                color: Colors.grey.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(6),
               ),
               child: const Row(
@@ -685,4 +686,4 @@ class _RendezVousScreenState extends State<RendezVousScreen> {
       ),
     );
   }
-}
+}

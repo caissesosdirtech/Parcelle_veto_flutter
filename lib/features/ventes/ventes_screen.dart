@@ -1,3 +1,4 @@
+import 'package:parcelles_veto_flutter/core/api/api_client.dart';
 import 'package:parcelles_veto_flutter/core/config/api_config.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
@@ -15,7 +16,7 @@ class _VentesScreenState extends State<VentesScreen> {
   static const primary = Color(0xFF1976D2);
   static const primaryDark = Color(0xFF0D47A1);
 
-  final Dio _dio = Dio(BaseOptions(
+  final Dio _dio = ApiClient.authentifie(BaseOptions(
     baseUrl: ApiConfig.baseUrl,
     connectTimeout: const Duration(seconds: 10),
     receiveTimeout: const Duration(seconds: 10),
@@ -270,7 +271,7 @@ class _VentesScreenState extends State<VentesScreen> {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: bgColor.withOpacity(0.5),
+        color: bgColor.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
@@ -827,4 +828,4 @@ class _NouvelleVenteDirecteModalState extends State<_NouvelleVenteDirecteModal> 
       ),
     );
   }
-}
+}

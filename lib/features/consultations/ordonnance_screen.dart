@@ -1,3 +1,4 @@
+import 'package:parcelles_veto_flutter/core/api/api_client.dart';
 import 'package:parcelles_veto_flutter/core/config/api_config.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
@@ -20,7 +21,7 @@ class _OrdonnanceScreenState extends State<OrdonnanceScreen> {
   static const primary = Color(0xFF1F6FEB);
   static const primaryDark = Color(0xFF0D47A1);
 
-  final Dio _dio = Dio(BaseOptions(
+  final Dio _dio = ApiClient.authentifie(BaseOptions(
     baseUrl: ApiConfig.baseUrl,
     connectTimeout: const Duration(seconds: 20),
     receiveTimeout: const Duration(seconds: 20),
@@ -31,9 +32,9 @@ class _OrdonnanceScreenState extends State<OrdonnanceScreen> {
   ));
 
   bool _loading = true;
-  Map _consultationData = {};
-  List _lignesOrdonnance = [];
-  List _medicamentsDisponibles = [];
+  Map<dynamic, dynamic> _consultationData = {};
+  List<dynamic> _lignesOrdonnance = [];
+  List<dynamic> _medicamentsDisponibles = [];
   bool _isTerminee = false;
 
   String? _rdvDateAffichage;
@@ -110,7 +111,7 @@ class _OrdonnanceScreenState extends State<OrdonnanceScreen> {
     }
 
     try {
-      List payloadMeds = _lignesOrdonnance.map((l) {
+      final List<dynamic> payloadMeds = _lignesOrdonnance.map((l) {
         final medId = l['medicament_id'] ?? l['medicament'] ?? l['id'];
         return {
           'medicament_id': medId,
@@ -178,7 +179,7 @@ class _OrdonnanceScreenState extends State<OrdonnanceScreen> {
     try {
       final resPharmacie = await _dio.get("pharmacie/api/medicaments");
       final dataPharmacie = resPharmacie.data;
-      List rawMeds = [];
+      List<dynamic> rawMeds = [];
 
       if (dataPharmacie is List) {
         rawMeds = dataPharmacie;
@@ -517,4 +518,4 @@ class _OrdonnanceScreenState extends State<OrdonnanceScreen> {
       ),
     );
   }
-}
+}

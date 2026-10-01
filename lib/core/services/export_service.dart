@@ -1,3 +1,4 @@
+import 'package:parcelles_veto_flutter/core/api/api_client.dart';
 import 'package:parcelles_veto_flutter/core/config/api_config.dart';
 import 'dart:io';
 import 'package:dio/dio.dart';
@@ -8,7 +9,7 @@ import 'auth_service.dart';
 /// Service générique pour télécharger un fichier (PDF/Excel) depuis
 /// l'API Django, puis proposer de le partager (WhatsApp, email, etc.)
 class ExportService {
-  static final Dio _dio = Dio(BaseOptions(
+  static final Dio _dio = ApiClient.authentifie(BaseOptions(
     baseUrl: ApiConfig.baseUrl,
     connectTimeout: const Duration(seconds: 15),
     receiveTimeout: const Duration(seconds: 30),

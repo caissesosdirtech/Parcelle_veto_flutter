@@ -1,3 +1,4 @@
+import 'package:parcelles_veto_flutter/core/api/api_client.dart';
 import 'package:parcelles_veto_flutter/core/config/api_config.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
@@ -16,7 +17,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
   static const primary = Color(0xFF2E7D4F);
   static const primaryDark = Color(0xFF1B4D2E);
 
-  final Dio _dio = Dio(BaseOptions(
+  final Dio _dio = ApiClient.authentifie(BaseOptions(
     baseUrl: ApiConfig.baseUrl,
     connectTimeout: const Duration(seconds: 10),
     receiveTimeout: const Duration(seconds: 10),
@@ -281,7 +282,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
               width: 34,
               height: 34,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.15),
+                color: Colors.white.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(8),
               ),
               child:
@@ -305,7 +306,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.15),
+              color: Colors.white.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
@@ -320,7 +321,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
               width: 34,
               height: 34,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.15),
+                color: Colors.white.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: const Icon(Icons.refresh, color: Colors.white, size: 18),
@@ -926,4 +927,4 @@ class _ClientsScreenState extends State<ClientsScreen> {
       ),
     );
   }
-}
+}

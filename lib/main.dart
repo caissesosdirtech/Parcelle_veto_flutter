@@ -10,8 +10,9 @@ import 'features/auth/login_screen.dart';
 import 'features/dashboard/dashboard_screen.dart';
 import 'core/services/auth_service.dart';
 import 'core/services/notification_service.dart';
+import 'core/api/api_client.dart';
 
-Future main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(
@@ -19,12 +20,12 @@ Future main() async {
   );
 
   try {
-    String? fcmToken = await FirebaseMessaging.instance.getToken();
-    print("🔥 ========================================== 🔥");
-    print("🔥 MON TOKEN FCM : $fcmToken");
-    print("🔥 ========================================== 🔥");
+    final String? fcmToken = await FirebaseMessaging.instance.getToken();
+    debugPrint("🔥 ========================================== 🔥");
+    debugPrint("🔥 MON TOKEN FCM : $fcmToken");
+    debugPrint("🔥 ========================================== 🔥");
   } catch (e) {
-    print("Erreur récupération FCM Token: $e");
+    debugPrint("Erreur récupération FCM Token: $e");
   }
 
   // Supprime l'ancien canal 'high_importance_channel' (ancien son),
@@ -36,13 +37,13 @@ Future main() async {
         AndroidFlutterLocalNotificationsPlugin>()
         ?.deleteNotificationChannel('high_importance_channel');
   } catch (e) {
-    print('Suppression ancien canal : $e');
+    debugPrint('Suppression ancien canal : $e');
   }
 
   try {
     await NotificationService.initialize();
   } catch (e) {
-    print('Erreur initialisation notifications : $e');
+    debugPrint('Erreur initialisation notifications : $e');
   }
 
   runApp(const ParcellsVetoApp());
@@ -55,6 +56,7 @@ class ParcellsVetoApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Parcelles Véto',
+      navigatorKey: appNavigatorKey,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
@@ -85,7 +87,7 @@ class _SplashRouterState extends State<_SplashRouter> {
     _checkAuth();
   }
 
-  Future _checkAuth() async {
+  Future<void> _checkAuth() async {
     await Future.delayed(const Duration(seconds: 1));
 
     if (!mounted) return;
@@ -99,9 +101,11 @@ class _SplashRouterState extends State<_SplashRouter> {
       );
 
       if (isLogged) {
+        // Renouvelle le jeton au démarrage. Réseau lent ou absent : on garde
+        // la session (seul un refus explicite du serveur déconnecte).
         final refreshOk = await AuthService.refreshToken().timeout(
-          const Duration(seconds: 5),
-          onTimeout: () => false,
+          const Duration(seconds: 10),
+          onTimeout: () => true,
         );
 
         if (refreshOk) {
@@ -189,17 +193,17 @@ class _SplashRouterState extends State<_SplashRouter> {
 }
 
 /// ── FONCTION D'ENVOI DU TOKEN FCM AU SERVEUR DJANGO ──
-Future envoyerFcmTokenAuServeur(Dio dio) async {
+Future<void> envoyerFcmTokenAuServeur(Dio dio) async {
   try {
-    String? fcmToken = await FirebaseMessaging.instance.getToken();
+    final String? fcmToken = await FirebaseMessaging.instance.getToken();
     if (fcmToken != null) {
       final response = await dio.post(
         'notifications/api/register-token/',
         data: {'fcm_token': fcmToken},
       );
-      print("✅ Token FCM enregistré sur le serveur : ${response.data}");
+      debugPrint("✅ Token FCM enregistré sur le serveur : ${response.data}");
     }
   } catch (e) {
-    print("❌ Erreur lors de l'envoi du token FCM : $e");
+    debugPrint("❌ Erreur lors de l'envoi du token FCM : $e");
   }
-}
+}

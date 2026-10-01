@@ -14,7 +14,6 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen>
     with SingleTickerProviderStateMixin {
   static const primary = Color(0xFF2E7D4F);
-  static const primaryDark = Color(0xFF1B4D2E);
 
   final _usernameCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
@@ -201,10 +200,10 @@ class _LoginScreenState extends State<LoginScreen>
                     width: 46,
                     height: 46,
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                          color: Colors.white.withOpacity(0.4), width: 1.5),
+                          color: Colors.white.withValues(alpha: 0.4), width: 1.5),
                     ),
                     child: const Icon(Icons.local_hospital,
                         color: Colors.white, size: 26),
@@ -234,10 +233,10 @@ class _LoginScreenState extends State<LoginScreen>
                     padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.15),
+                      color: Colors.white.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                          color: Colors.white.withOpacity(0.3), width: 1),
+                          color: Colors.white.withValues(alpha: 0.3), width: 1),
                     ),
                     child: Row(children: [
                       Container(
@@ -354,7 +353,7 @@ class _LoginScreenState extends State<LoginScreen>
             style: ElevatedButton.styleFrom(
               backgroundColor: primary,
               foregroundColor: Colors.white,
-              disabledBackgroundColor: primary.withOpacity(0.6),
+              disabledBackgroundColor: primary.withValues(alpha: 0.6),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(14)),
               elevation: 0,
@@ -470,4 +469,4 @@ class _LoginScreenState extends State<LoginScreen>
       ]),
     );
   }
-}
+}

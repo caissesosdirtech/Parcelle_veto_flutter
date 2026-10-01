@@ -19,9 +19,9 @@ class _PharmacieScreenState extends State<PharmacieScreen>
 
   final service = PharmacieService();
 
-  List _medicaments = [];
-  List _alertes = [];
-  List _filtered = [];
+  List<dynamic> _medicaments = [];
+  List<dynamic> _alertes = [];
+  List<dynamic> _filtered = [];
   bool _loading = true;
   String? _error;
   late TabController _tabCtrl;
@@ -256,7 +256,7 @@ class _PharmacieScreenState extends State<PharmacieScreen>
             width: 38,
             height: 38,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
+              color: Colors.white.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(10),
             ),
             child: const Icon(Icons.arrow_back, color: Colors.white, size: 20),
@@ -280,7 +280,7 @@ class _PharmacieScreenState extends State<PharmacieScreen>
             width: 38,
             height: 38,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
+              color: Colors.white.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(10),
             ),
             child: const Icon(Icons.refresh, color: Colors.white, size: 20),
@@ -300,7 +300,7 @@ class _PharmacieScreenState extends State<PharmacieScreen>
         color: cardColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 8, offset: const Offset(0, 2))
+          BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 8, offset: const Offset(0, 2))
         ],
       ),
       child: Row(children: [
@@ -340,7 +340,7 @@ class _PharmacieScreenState extends State<PharmacieScreen>
           color: cardColor,
           borderRadius: BorderRadius.circular(14),
           boxShadow: [
-            BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 6, offset: const Offset(0, 2))
+            BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 6, offset: const Offset(0, 2))
           ],
         ),
         child: TextField(
@@ -487,7 +487,7 @@ class _PharmacieScreenState extends State<PharmacieScreen>
         decoration: BoxDecoration(
           color: cardColor,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: primary.withOpacity(0.4)),
+          border: Border.all(color: primary.withValues(alpha: 0.4)),
         ),
         child: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -513,7 +513,7 @@ class _PharmacieScreenState extends State<PharmacieScreen>
         color: cardColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 6, offset: const Offset(0, 2))
+          BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 6, offset: const Offset(0, 2))
         ],
       ),
       child: Material(
@@ -891,4 +891,4 @@ class _PharmacieScreenState extends State<PharmacieScreen>
       ),
     );
   }
-}
+}

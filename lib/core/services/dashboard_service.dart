@@ -1,3 +1,4 @@
+import 'package:parcelles_veto_flutter/core/api/api_client.dart';
 import 'package:parcelles_veto_flutter/core/config/api_config.dart';
 import 'package:dio/dio.dart';
 import 'auth_service.dart';
@@ -5,7 +6,7 @@ import 'auth_service.dart';
 class DashboardService {
   Future<Dio> _getDio() async {
     final token = await AuthService.getToken();
-    return Dio(BaseOptions(
+    return ApiClient.authentifie(BaseOptions(
       baseUrl: ApiConfig.baseUrl,
       connectTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 10),
@@ -22,7 +23,7 @@ class DashboardService {
     return res.data;
   }
 
-  Future<List> getStockAlerts() async {
+  Future<List<dynamic>> getStockAlerts() async {
     try {
       final dio = await _getDio();
       final res = await dio.get("pharmacie/api/alertes/");
@@ -34,7 +35,7 @@ class DashboardService {
     }
   }
 
-  Future<List> getFournisseurs() async {
+  Future<List<dynamic>> getFournisseurs() async {
     try {
       final dio = await _getDio();
       final res = await dio.get("fournisseurs/api/liste/");
@@ -47,10 +48,10 @@ class DashboardService {
   }
 
   // --- NOUVEAU : Récupération des clients pour les ventes et consultations ---
-  Future<List> getClients() async {
+  Future<List<dynamic>> getClients() async {
     try {
       final dio = await _getDio();
-      Response res;
+      Response<dynamic> res;
       try {
         res = await dio.get("consultations/api/clients/");
       } catch (_) {
@@ -101,7 +102,7 @@ class DashboardService {
   }
 
   // Historique global des ventes
-  Future<List> getVentes() async {
+  Future<List<dynamic>> getVentes() async {
     try {
       final dio = await _getDio();
       final res = await dio.get("ventes/api/liste/");
@@ -114,7 +115,7 @@ class DashboardService {
   }
 
   // Ventes du jour
-  Future<List> getVentesDuJour() async {
+  Future<List<dynamic>> getVentesDuJour() async {
     try {
       final dio = await _getDio();
       final res = await dio.get("ventes/api/aujourdhui/");
@@ -127,7 +128,7 @@ class DashboardService {
   }
 
   // Liste des consultations
-  Future<List> getConsultations() async {
+  Future<List<dynamic>> getConsultations() async {
     try {
       final dio = await _getDio();
       final res = await dio.get("consultations/api/liste/");
@@ -140,7 +141,7 @@ class DashboardService {
   }
 
   // Recherche rapide de médicaments
-  Future<List> searchMedicaments(String query) async {
+  Future<List<dynamic>> searchMedicaments(String query) async {
     try {
       final dio = await _getDio();
       final res = await dio.get("pharmacie/api/medicaments/?search=$query");
@@ -151,4 +152,4 @@ class DashboardService {
       return [];
     }
   }
-}
+}

@@ -1,3 +1,4 @@
+import 'package:parcelles_veto_flutter/core/api/api_client.dart';
 import 'package:parcelles_veto_flutter/core/config/api_config.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
@@ -31,7 +32,7 @@ class _VenteJournaliereScreenState extends State<VenteJournaliereScreen> {
 
   Future<Dio> _getDio() async {
     final token = await AuthService.getToken();
-    return Dio(BaseOptions(
+    return ApiClient.authentifie(BaseOptions(
       baseUrl: ApiConfig.baseUrl,
       connectTimeout: const Duration(seconds: 20),
       receiveTimeout: const Duration(seconds: 20),
@@ -177,7 +178,7 @@ class _VenteJournaliereScreenState extends State<VenteJournaliereScreen> {
             width: 34,
             height: 34,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.15),
+              color: Colors.white.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(8),
             ),
             child: const Icon(Icons.arrow_back, color: Colors.white, size: 18),
@@ -200,7 +201,7 @@ class _VenteJournaliereScreenState extends State<VenteJournaliereScreen> {
             width: 34,
             height: 34,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.15),
+              color: Colors.white.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(8),
             ),
             child: const Icon(Icons.refresh, color: Colors.white, size: 18),
@@ -436,7 +437,7 @@ class _VenteJournaliereScreenState extends State<VenteJournaliereScreen> {
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-                color: color.withOpacity(0.1), shape: BoxShape.circle),
+                color: color.withValues(alpha: 0.1), shape: BoxShape.circle),
             child: Icon(icon, color: color, size: 18),
           ),
           const SizedBox(width: 10),
@@ -522,4 +523,4 @@ class _VenteJournaliereScreenState extends State<VenteJournaliereScreen> {
       ]),
     );
   }
-}
+}

@@ -1,11 +1,9 @@
 import 'dart:async';
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 import '../pharmacie/pharmacie_screen.dart';
-import '../animaux/animaux_screen.dart';
 import '../../core/services/dashboard_service.dart';
 import '../../core/services/auth_service.dart';
 import '../../core/services/permissions_service.dart';
@@ -319,7 +317,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 borderRadius: BorderRadius.circular(26),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.12),
+                    color: Colors.black.withValues(alpha: 0.12),
                     blurRadius: 28,
                     offset: const Offset(0, 10),
                   ),
@@ -385,7 +383,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                         return Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: n.color.withOpacity(0.06),
+                            color: n.color.withValues(alpha: 0.06),
                             borderRadius: BorderRadius.circular(14),
                           ),
                           child: Row(
@@ -394,7 +392,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                                 width: 36,
                                 height: 36,
                                 decoration: BoxDecoration(
-                                  color: n.color.withOpacity(0.15),
+                                  color: n.color.withValues(alpha: 0.15),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: Icon(n.icon, color: n.color, size: 18),
@@ -488,7 +486,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             borderRadius: BorderRadius.circular(26),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.12),
+                color: Colors.black.withValues(alpha: 0.12),
                 blurRadius: 28,
                 offset: const Offset(0, 10),
               ),
@@ -677,7 +675,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Icon(Icons.local_hospital_rounded, color: Colors.white, size: 28),
@@ -695,7 +693,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                   Text(
                     _role.isNotEmpty ? "Espace $_role" : "Espace Employé",
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.8),
+                      color: Colors.white.withValues(alpha: 0.8),
                       fontSize: 12,
                     ),
                   ),
@@ -759,7 +757,7 @@ class _DashboardScreenState extends State<DashboardScreen>
               child: Row(
                 children: [
                   CircleAvatar(
-                    backgroundColor: primary.withOpacity(0.15),
+                    backgroundColor: primary.withValues(alpha: 0.15),
                     child: Text(
                       _username.isNotEmpty ? _username[0].toUpperCase() : "U",
                       style: const TextStyle(color: primary, fontWeight: FontWeight.bold),
@@ -839,7 +837,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 width: 58,
                 height: 58,
                 decoration: BoxDecoration(
-                  color: Colors.red.withOpacity(0.1),
+                  color: Colors.red.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(Icons.logout_rounded,
@@ -1023,7 +1021,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                       fontSize: 10.5,
                       fontWeight: FontWeight.w800,
                       letterSpacing: 1.3,
-                      color: primary.withOpacity(0.9),
+                      color: primary.withValues(alpha: 0.9),
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -1072,7 +1070,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.045),
+            color: Colors.black.withValues(alpha: 0.045),
             blurRadius: 20,
             offset: const Offset(0, 6),
           ),
@@ -1204,7 +1202,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             borderRadius: BorderRadius.circular(22),
             boxShadow: [
               BoxShadow(
-                color: primary.withOpacity(0.28 + t * 0.06),
+                color: primary.withValues(alpha: 0.28 + t * 0.06),
                 blurRadius: 20 + t * 4,
                 offset: const Offset(0, 10),
               ),
@@ -1222,7 +1220,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 padding:
                 const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.15),
+                  color: Colors.white.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: const Text(
@@ -1237,7 +1235,7 @@ class _DashboardScreenState extends State<DashboardScreen>
               ),
               const Spacer(),
               Icon(Icons.calendar_today_rounded,
-                  color: Colors.white.withOpacity(0.75), size: 16),
+                  color: Colors.white.withValues(alpha: 0.75), size: 16),
             ],
           ),
           const SizedBox(height: 12),
@@ -1261,7 +1259,7 @@ class _DashboardScreenState extends State<DashboardScreen>
               Container(
                 width: 1,
                 height: 40,
-                color: Colors.white.withOpacity(0.18),
+                color: Colors.white.withValues(alpha: 0.18),
               ),
               Expanded(
                 child: _todayMetric(
@@ -1298,7 +1296,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           Text(
             label,
             style: TextStyle(
-              color: Colors.white.withOpacity(0.72),
+              color: Colors.white.withValues(alpha: 0.72),
               fontSize: 11,
               fontWeight: FontWeight.w500,
             ),
@@ -1407,7 +1405,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           borderRadius: BorderRadius.circular(18),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.04),
+              color: Colors.black.withValues(alpha: 0.04),
               blurRadius: 14,
               offset: const Offset(0, 5),
             ),
@@ -1464,7 +1462,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           borderRadius: BorderRadius.circular(18),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.04),
+              color: Colors.black.withValues(alpha: 0.04),
               blurRadius: 14,
               offset: const Offset(0, 5),
             ),
@@ -1590,7 +1588,7 @@ class _HeaderButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(14),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.04),
+              color: Colors.black.withValues(alpha: 0.04),
               blurRadius: 10,
               offset: const Offset(0, 3),
             ),
@@ -1624,7 +1622,7 @@ class _NotificationBellButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(14),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.04),
+              color: Colors.black.withValues(alpha: 0.04),
               blurRadius: 10,
               offset: const Offset(0, 3),
             ),
@@ -1697,7 +1695,7 @@ class _PremiumAction extends StatelessWidget {
           borderRadius: BorderRadius.circular(18),
           boxShadow: [
             BoxShadow(
-              color: gradient.first.withOpacity(0.3),
+              color: gradient.first.withValues(alpha: 0.3),
               blurRadius: 12,
               offset: const Offset(0, 5),
             ),
@@ -1708,7 +1706,7 @@ class _PremiumAction extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(icon, color: Colors.white, size: 20),
@@ -1719,7 +1717,7 @@ class _PremiumAction extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(title, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13)),
-                  Text(subtitle, style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 10)),
+                  Text(subtitle, style: TextStyle(color: Colors.white.withValues(alpha: 0.8), fontSize: 10)),
                 ],
               ),
             ),
@@ -1747,7 +1745,7 @@ class _StatTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha: 0.03),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -1758,7 +1756,7 @@ class _StatTile extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color: color.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(icon, color: color, size: 20),
@@ -1784,4 +1782,4 @@ class _StatTile extends StatelessWidget {
       ),
     );
   }
-}
+}

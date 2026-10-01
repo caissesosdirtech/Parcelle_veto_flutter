@@ -1,15 +1,16 @@
+import 'package:parcelles_veto_flutter/core/api/api_client.dart';
 import 'package:parcelles_veto_flutter/core/config/api_config.dart';
 import 'package:dio/dio.dart';
 
 class PharmacieService {
-  final Dio dio = Dio(BaseOptions(
+  final Dio dio = ApiClient.authentifie(BaseOptions(
     baseUrl: ApiConfig.baseUrl,
     connectTimeout: const Duration(seconds: 10),
     receiveTimeout: const Duration(seconds: 10),
   ));
 
   // ── LISTE (avec id pour CRUD) ─────────────────────────────────────────────
-  Future<List> getMedicaments() async {
+  Future<List<dynamic>> getMedicaments() async {
     try {
       final res = await dio.get("pharmacie/api/liste/");
       if (res.data is Map && res.data['results'] != null) {
@@ -22,7 +23,7 @@ class PharmacieService {
   }
 
   // ── ALERTES ───────────────────────────────────────────────────────────────
-  Future<List> getAlertes() async {
+  Future<List<dynamic>> getAlertes() async {
     try {
       final res = await dio.get("pharmacie/api/alertes/");
       return res.data;

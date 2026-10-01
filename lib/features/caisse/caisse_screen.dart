@@ -1,3 +1,4 @@
+import 'package:parcelles_veto_flutter/core/api/api_client.dart';
 import 'package:parcelles_veto_flutter/core/config/api_config.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
@@ -14,7 +15,7 @@ class _CaisseScreenState extends State<CaisseScreen> {
   static const primary = Color(0xFF2E7D4F);
   static const primaryDark = Color(0xFF1B4D2E);
 
-  final Dio _dio = Dio(BaseOptions(
+  final Dio _dio = ApiClient.authentifie(BaseOptions(
     baseUrl: ApiConfig.baseUrl,
     connectTimeout: const Duration(seconds: 10),
     receiveTimeout: const Duration(seconds: 10),
@@ -160,7 +161,7 @@ class _CaisseScreenState extends State<CaisseScreen> {
             width: 34,
             height: 34,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.15),
+              color: Colors.white.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(8),
             ),
             child: const Icon(Icons.arrow_back, color: Colors.white, size: 18),
@@ -183,7 +184,7 @@ class _CaisseScreenState extends State<CaisseScreen> {
             width: 34,
             height: 34,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.15),
+              color: Colors.white.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(8),
             ),
             child: const Icon(Icons.refresh, color: Colors.white, size: 18),
@@ -456,7 +457,7 @@ class _CaisseScreenState extends State<CaisseScreen> {
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-                color: color.withOpacity(0.1), shape: BoxShape.circle),
+                color: color.withValues(alpha: 0.1), shape: BoxShape.circle),
             child: Icon(icon, color: color, size: 18),
           ),
           const SizedBox(width: 10),
@@ -510,7 +511,7 @@ class _CaisseScreenState extends State<CaisseScreen> {
             Text(
               'Période filtrée',
               style:
-                  TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 11),
+                  TextStyle(color: Colors.white.withValues(alpha: 0.6), fontSize: 11),
             ),
         ]),
       ]),

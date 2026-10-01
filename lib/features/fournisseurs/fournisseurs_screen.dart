@@ -1,3 +1,4 @@
+import 'package:parcelles_veto_flutter/core/api/api_client.dart';
 import 'package:parcelles_veto_flutter/core/config/api_config.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
@@ -15,7 +16,7 @@ class _FournisseursScreenState extends State<FournisseursScreen> {
   static const primary = Color(0xFF1976D2);
   static const primaryDark = Color(0xFF0D47A1);
 
-  final Dio _dio = Dio(BaseOptions(
+  final Dio _dio = ApiClient.authentifie(BaseOptions(
     baseUrl: ApiConfig.baseUrl,
     connectTimeout: const Duration(seconds: 10),
     receiveTimeout: const Duration(seconds: 10),
@@ -187,7 +188,7 @@ class _FournisseursScreenState extends State<FournisseursScreen> {
             width: 34,
             height: 34,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.15),
+              color: Colors.white.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(8),
             ),
             child: const Icon(Icons.arrow_back, color: Colors.white, size: 18),
@@ -207,7 +208,7 @@ class _FournisseursScreenState extends State<FournisseursScreen> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.15),
+            color: Colors.white.withValues(alpha: 0.15),
             borderRadius: BorderRadius.circular(20),
           ),
           child: Text(
@@ -222,7 +223,7 @@ class _FournisseursScreenState extends State<FournisseursScreen> {
             width: 34,
             height: 34,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.15),
+              color: Colors.white.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(8),
             ),
             child: const Icon(Icons.refresh, color: Colors.white, size: 18),
@@ -261,8 +262,9 @@ class _FournisseursScreenState extends State<FournisseursScreen> {
   // ── BODY ──────────────────────────────────────────────────────────────────
 
   Widget _buildBody() {
-    if (_loading)
+    if (_loading) {
       return const Center(child: CircularProgressIndicator(color: primary));
+    }
 
     if (_error != null) {
       return Center(
@@ -679,4 +681,4 @@ class _FournisseursScreenState extends State<FournisseursScreen> {
       ),
     );
   }
-}
+}
