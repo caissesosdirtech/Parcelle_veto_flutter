@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:parcelles_veto_flutter/core/api/api_client.dart';
 import 'package:parcelles_veto_flutter/core/config/api_config.dart';
 import 'package:dio/dio.dart';
@@ -5,6 +7,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'auth_service.dart';
+import 'notification_router.dart';
 
 /// ─────────────────────────────────────────────────────────────────────
 /// CONFIGURATION DU CANAL ET DU SON
@@ -76,6 +79,9 @@ class NotificationService {
       const InitializationSettings(
         android: AndroidInitializationSettings('@mipmap/ic_launcher'),
       ),
+      // Appui sur une notification affichée par l'app (premier plan)
+      onDidReceiveNotificationResponse: (reponse) =>
+          NotificationRouter.ouvrirDepuisPayload(reponse.payload),
     );
 
     // 2. Création du canal AVEC le son personnalisé, avant tout affichage.
@@ -123,6 +129,11 @@ class NotificationService {
           notification.hashCode,
           notification.title,
           notification.body,
+          payload: jsonEncode({
+            ...message.data,
+            'titre': notification.title ?? '',
+            'corps': notification.body ?? '',
+          }),
           const NotificationDetails(
             android: AndroidNotificationDetails(
               kChannelId,
@@ -138,7 +149,34 @@ class NotificationService {
       }
     });
 
+    // 4. Appui sur une notification quand l'app était en arrière-plan.
+    FirebaseMessaging.onMessageOpenedApp.listen(_ouvrirMessage);
+
+    // 5. App lancée (fermée) par un appui sur une notification.
+    try {
+      final initial = await _messaging.getInitialMessage();
+      if (initial != null) _ouvrirMessage(initial);
+
+      final lancement =
+          await _localNotifications.getNotificationAppLaunchDetails();
+      if (lancement?.didNotificationLaunchApp ?? false) {
+        NotificationRouter.ouvrirDepuisPayload(
+            lancement!.notificationResponse?.payload);
+      }
+    } catch (e) {
+      // ignore: avoid_print
+      print('Notification de lancement illisible : $e');
+    }
+
     return token;
+  }
+
+  static void _ouvrirMessage(RemoteMessage message) {
+    NotificationRouter.ouvrir({
+      ...message.data,
+      'titre': message.notification?.title ?? '',
+      'corps': message.notification?.body ?? '',
+    });
   }
 
   /// Envoie (ou met à jour) le token FCM auprès du backend, associé au

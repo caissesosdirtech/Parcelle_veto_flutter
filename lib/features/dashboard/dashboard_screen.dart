@@ -15,6 +15,7 @@ import '../caisse/caisse_screen.dart';
 import '../auth/login_screen.dart';
 import '../fournisseurs/fournisseurs_screen.dart';
 import '../ventes/vente_journaliere_screen.dart';
+import 'package:parcelles_veto_flutter/core/services/notification_router.dart';
 
 // ─────────────────────────────────────────────
 // MODELE DE NOTIFICATION
@@ -97,6 +98,12 @@ class _DashboardScreenState extends State<DashboardScreen>
   void initState() {
     super.initState();
 
+    // Ouvre le contenu d'une notification appuyée avant l'affichage
+    // du tableau de bord (app lancée par la notification).
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => NotificationRouter.marquerPret(),
+    );
+
     _entranceController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1100),
@@ -124,6 +131,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   @override
   void dispose() {
+    NotificationRouter.marquerNonPret();
     _searchController.dispose();
     _entranceController.dispose();
     _pulseController.dispose();
