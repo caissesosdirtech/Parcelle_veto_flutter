@@ -810,90 +810,183 @@ class _DashboardScreenState extends State<DashboardScreen>
   // LOGOUT
   // ─────────────────────────────────────────────
   Future<void> _logout() async {
+    // Couleurs du logo (identiques à la page de connexion)
+    const bleu = Color(0xFF0B47C9);
+    const bleuClair = Color(0xFF0A7BD6);
+    const vert = Color(0xFF08C792);
+    const encre = Color(0xFF0F2547);
+    const gris = Color(0xFF6B7A90);
+    const rouge = Color(0xFFDC2626);
+
+    final nom = _username.isEmpty ? 'Utilisateur' : _username;
+
     final confirm = await showModalBottomSheet<bool>(
       context: context,
       backgroundColor: Colors.transparent,
-      builder: (_) {
-        return Container(
-          margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-          padding: const EdgeInsets.all(22),
-          decoration: BoxDecoration(
-            color: surface,
-            borderRadius: BorderRadius.circular(26),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 38,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
-                  borderRadius: BorderRadius.circular(10),
+      builder: (sheetContext) {
+        return SafeArea(
+          child: Container(
+            margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+            clipBehavior: Clip.antiAlias,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(28),
+              boxShadow: [
+                BoxShadow(
+                  color: encre.withValues(alpha: 0.18),
+                  blurRadius: 30,
+                  offset: const Offset(0, 10),
                 ),
-              ),
-              const SizedBox(height: 22),
-              Container(
-                width: 58,
-                height: 58,
-                decoration: BoxDecoration(
-                  color: Colors.red.withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.logout_rounded,
-                    color: Colors.red, size: 28),
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                "Déconnexion",
-                style: TextStyle(
-                    fontSize: 19,
-                    fontWeight: FontWeight.w800,
-                    color: textPrimary),
-              ),
-              const SizedBox(height: 6),
-              const Text(
-                "Voulez-vous vraiment vous déconnecter ?",
-                textAlign: TextAlign.center,
-                style: TextStyle(color: textSecondary, fontSize: 13.5),
-              ),
-              const SizedBox(height: 22),
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () => Navigator.pop(context, false),
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        side: BorderSide(color: Colors.grey.shade300),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                      ),
-                      child: const Text("Annuler",
-                          style: TextStyle(fontWeight: FontWeight.w600)),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // ── Bandeau en dégradé avec l'avatar
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 22),
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [bleu, bleuClair, vert],
+                      stops: [0, 0.55, 1],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () => Navigator.pop(context, true),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                        foregroundColor: Colors.white,
-                        elevation: 0,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
+                  child: Column(
+                    children: [
+                      Container(
+                        width: 38,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.5),
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      child: const Text("Déconnecter",
-                          style: TextStyle(fontWeight: FontWeight.w700)),
-                    ),
+                      const SizedBox(height: 18),
+                      Container(
+                        padding: const EdgeInsets.all(3),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.6),
+                            width: 2,
+                          ),
+                        ),
+                        child: CircleAvatar(
+                          radius: 30,
+                          backgroundColor: Colors.white,
+                          child: Text(
+                            nom[0].toUpperCase(),
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w800,
+                              color: bleu,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        nom,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ],
+                ),
+
+                // ── Message
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 22, 24, 20),
+                  child: Column(
+                    children: [
+                      const Text(
+                        'À bientôt 👋',
+                        style: TextStyle(
+                          fontSize: 21,
+                          fontWeight: FontWeight.w800,
+                          color: encre,
+                          letterSpacing: -0.2,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Voulez-vous vraiment vous déconnecter ?\n'
+                        'Vos données restent enregistrées en toute sécurité.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: gris, fontSize: 13.5, height: 1.45),
+                      ),
+                      const SizedBox(height: 24),
+
+                      // Rester connecté (action principale)
+                      SizedBox(
+                        width: double.infinity,
+                        height: 52,
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            gradient: const LinearGradient(
+                              colors: [bleu, vert],
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: bleu.withValues(alpha: 0.25),
+                                blurRadius: 14,
+                                offset: const Offset(0, 6),
+                              ),
+                            ],
+                          ),
+                          child: ElevatedButton(
+                            onPressed: () => Navigator.pop(sheetContext, false),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              shadowColor: Colors.transparent,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                            ),
+                            child: const Text(
+                              'Rester connecté',
+                              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+
+                      // Se déconnecter (action destructive, plus discrète)
+                      SizedBox(
+                        width: double.infinity,
+                        height: 52,
+                        child: TextButton.icon(
+                          onPressed: () => Navigator.pop(sheetContext, true),
+                          icon: const Icon(Icons.logout_rounded, size: 20),
+                          label: const Text(
+                            'Se déconnecter',
+                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+                          ),
+                          style: TextButton.styleFrom(
+                            foregroundColor: rouge,
+                            backgroundColor: const Color(0xFFFEF2F2),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },
