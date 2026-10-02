@@ -822,10 +822,13 @@ class _DashboardScreenState extends State<DashboardScreen>
 
     final confirm = await showModalBottomSheet<bool>(
       context: context,
+      // Sans cela, la fenêtre est limitée à ~56 % de l'écran → débordement
+      isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (sheetContext) {
         return SafeArea(
-          child: Container(
+          child: SingleChildScrollView(
+            child: Container(
             margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
             clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(
@@ -987,6 +990,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 ),
               ],
             ),
+          ),
           ),
         );
       },
