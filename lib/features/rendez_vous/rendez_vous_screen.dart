@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:parcelles_veto_flutter/core/api/api_client.dart';
 import 'package:parcelles_veto_flutter/core/config/api_config.dart';
 import 'package:flutter/material.dart';
@@ -176,7 +178,31 @@ class _RendezVousScreenState extends State<RendezVousScreen> {
     final motifCtrl = TextEditingController();
     DateTime selectedDate = DateTime.now();
     TimeOfDay selectedTime = TimeOfDay.now();
-    final String lieu = 'cabinet';
+    const String lieu = 'cabinet';
+
+    // Client choisi dans la base (null = nouveau client saisi à la main)
+    Map<String, dynamic>? clientChoisi;
+    // Animal choisi parmi ceux du client : null = aucun, '' = autre animal
+    String? animalChoisi;
+    String race = '';
+
+    void remplirAnimal(Map<String, dynamic>? a) {
+      animalChoisi = a == null ? '' : (a['nom'] ?? '').toString();
+      animalCtrl.text = a == null ? '' : (a['nom'] ?? '').toString();
+      especeCtrl.text = a == null ? '' : (a['espece'] ?? '').toString();
+      race = a == null ? '' : (a['race'] ?? '').toString();
+    }
+
+    void oublierClient() {
+      clientChoisi = null;
+      animalChoisi = null;
+      race = '';
+      clientCtrl.clear();
+      telCtrl.clear();
+      adresseCtrl.clear();
+      animalCtrl.clear();
+      especeCtrl.text = 'Chien';
+    }
 
     showModalBottomSheet(
       context: context,
@@ -187,6 +213,12 @@ class _RendezVousScreenState extends State<RendezVousScreen> {
       builder: (ctx) {
         return StatefulBuilder(
           builder: (context, setModalState) {
+            final List<Map<String, dynamic>> animauxClient = clientChoisi == null
+                ? []
+                : ((clientChoisi!['animaux'] as List<dynamic>?) ?? [])
+                    .map((e) => Map<String, dynamic>.from(e as Map))
+                    .toList();
+
             return Padding(
               padding: EdgeInsets.only(
                 top: 20,
@@ -212,6 +244,116 @@ class _RendezVousScreenState extends State<RendezVousScreen> {
                         ),
                       ],
                     ),
+                    const SizedBox(height: 12),
+
+                    // 👤 Client déjà enregistré dans la base
+                    if (clientChoisi == null)
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton.icon(
+                          icon: const Icon(Icons.person_search, size: 20),
+                          label: const Text('Choisir un client déjà enregistré'),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: primary,
+                            side: const BorderSide(color: primary),
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
+                          onPressed: () async {
+                            final choix = await showModalBottomSheet<Map<String, dynamic>>(
+                              context: context,
+                              isScrollControlled: true,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                              ),
+                              builder: (_) => _ClientPickerSheet(dio: _dio),
+                            );
+                            if (choix == null) return;
+                            setModalState(() {
+                              clientChoisi = choix;
+                              clientCtrl.text = (choix['nom'] ?? '').toString();
+                              telCtrl.text = (choix['telephone'] ?? '').toString();
+                              adresseCtrl.text = (choix['adresse'] ?? '').toString();
+                              final animaux = (choix['animaux'] as List<dynamic>?) ?? [];
+                              if (animaux.length == 1) {
+                                remplirAnimal(Map<String, dynamic>.from(animaux.first as Map));
+                              } else {
+                                animalChoisi = null;
+                                animalCtrl.clear();
+                                especeCtrl.clear();
+                                race = '';
+                              }
+                            });
+                          },
+                        ),
+                      )
+                    else
+                      Container(
+                        padding: const EdgeInsets.fromLTRB(14, 10, 6, 10),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFE8F0FE),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: const Color(0xFFC6DAFC)),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.person, color: primary),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text('Client sélectionné',
+                                      style: TextStyle(fontSize: 11, color: Colors.black54)),
+                                  Text(
+                                    '${clientChoisi!['nom'] ?? ''} · ${clientChoisi!['telephone'] ?? ''}',
+                                    style: const TextStyle(fontWeight: FontWeight.bold, color: primaryDark),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () => setModalState(oublierClient),
+                              child: const Text('Changer'),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                    // 🐾 Animaux du client sélectionné
+                    if (animauxClient.isNotEmpty) ...[
+                      const SizedBox(height: 10),
+                      const Text('Animal concerné :',
+                          style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                      const SizedBox(height: 6),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 4,
+                        children: [
+                          ...animauxClient.map((a) {
+                            final nom = (a['nom'] ?? '').toString();
+                            return ChoiceChip(
+                              label: Text('$nom (${a['espece'] ?? ''})'),
+                              selected: animalChoisi == nom,
+                              selectedColor: primary,
+                              labelStyle: TextStyle(
+                                color: animalChoisi == nom ? Colors.white : Colors.black87,
+                              ),
+                              onSelected: (_) => setModalState(() => remplirAnimal(a)),
+                            );
+                          }),
+                          ChoiceChip(
+                            label: const Text('+ Autre animal'),
+                            selected: animalChoisi == '',
+                            selectedColor: primary,
+                            labelStyle: TextStyle(
+                              color: animalChoisi == '' ? Colors.white : Colors.black87,
+                            ),
+                            onSelected: (_) => setModalState(() => remplirAnimal(null)),
+                          ),
+                        ],
+                      ),
+                    ],
+
                     const SizedBox(height: 12),
                     TextField(
                       controller: clientCtrl,
@@ -340,6 +482,7 @@ class _RendezVousScreenState extends State<RendezVousScreen> {
                               'adresse': adresseCtrl.text,
                               'nom_animal': animalCtrl.text,
                               'espece': especeCtrl.text,
+                              'race': race,
                               'motif': motifCtrl.text,
                               'date_rdv': dt.toIso8601String(),
                               'lieu': lieu,
@@ -349,12 +492,12 @@ class _RendezVousScreenState extends State<RendezVousScreen> {
                             if (ctx.mounted) Navigator.pop(ctx);
                             if (!mounted) return;
                             _loadRendezVous();
-                            ScaffoldMessenger.of(context).showSnackBar(
+                            ScaffoldMessenger.of(this.context).showSnackBar(
                               const SnackBar(content: Text('Rendez-vous programmé avec succès !')),
                             );
                           } catch (e) {
                             if (!mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
+                            ScaffoldMessenger.of(this.context).showSnackBar(
                               SnackBar(content: Text('Erreur d\'ajout : $e'), backgroundColor: Colors.red),
                             );
                           }
@@ -687,3 +830,168 @@ class _RendezVousScreenState extends State<RendezVousScreen> {
     );
   }
 }
+
+/// Fenêtre de recherche d'un client déjà enregistré (avec ses animaux).
+/// Renvoie le client choisi, ou null si on ferme sans choisir.
+class _ClientPickerSheet extends StatefulWidget {
+  final Dio dio;
+
+  const _ClientPickerSheet({required this.dio});
+
+  @override
+  State<_ClientPickerSheet> createState() => _ClientPickerSheetState();
+}
+
+class _ClientPickerSheetState extends State<_ClientPickerSheet> {
+  static const primary = Color(0xFF1976D2);
+
+  final TextEditingController _ctrl = TextEditingController();
+  Timer? _attente;
+  List<Map<String, dynamic>> _clients = [];
+  bool _loading = true;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _charger('');
+  }
+
+  @override
+  void dispose() {
+    _attente?.cancel();
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _charger(String recherche) async {
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+    try {
+      final res = await widget.dio.get(
+        'consultations/api/clients/',
+        queryParameters: {'search': recherche},
+      );
+      // Une réponse plus ancienne arrive après la frappe suivante : on l'ignore
+      if (!mounted || _ctrl.text.trim() != recherche) return;
+      final data = res.data;
+      final List<dynamic> liste = data is Map
+          ? ((data['results'] as List<dynamic>?) ?? [])
+          : (data is List ? data : []);
+      setState(() {
+        _clients = liste.map((e) => Map<String, dynamic>.from(e as Map)).toList();
+        _loading = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _error = 'Impossible de charger les clients.';
+        _loading = false;
+      });
+    }
+  }
+
+  void _onRecherche(String valeur) {
+    _attente?.cancel();
+    _attente = Timer(const Duration(milliseconds: 350), () => _charger(valeur.trim()));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(
+        top: 16,
+        left: 16,
+        right: 16,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 8,
+      ),
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.7,
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Choisir un client',
+                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
+            ),
+            TextField(
+              controller: _ctrl,
+              autofocus: true,
+              onChanged: _onRecherche,
+              decoration: InputDecoration(
+                hintText: 'Nom, téléphone ou nom de l\'animal…',
+                prefixIcon: const Icon(Icons.search, color: primary),
+                filled: true,
+                fillColor: const Color(0xFFF0F4F8),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Expanded(child: _buildListe()),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildListe() {
+    if (_loading) {
+      return const Center(child: CircularProgressIndicator(color: primary));
+    }
+    if (_error != null) {
+      return Center(child: Text(_error!, style: const TextStyle(color: Colors.red)));
+    }
+    if (_clients.isEmpty) {
+      return const Center(
+        child: Text(
+          'Aucun client trouvé.\nFermez cette fenêtre pour le saisir à la main.',
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.black54),
+        ),
+      );
+    }
+    return ListView.separated(
+      itemCount: _clients.length,
+      separatorBuilder: (context, index) => const Divider(height: 1),
+      itemBuilder: (context, i) {
+        final c = _clients[i];
+        final nom = (c['nom'] ?? '').toString();
+        final animaux = ((c['animaux'] as List<dynamic>?) ?? [])
+            .map((a) => ((a as Map)['nom'] ?? '').toString())
+            .where((n) => n.isNotEmpty)
+            .join(', ');
+        return ListTile(
+          leading: CircleAvatar(
+            backgroundColor: const Color(0xFFE8F0FE),
+            child: Text(
+              nom.isNotEmpty ? nom[0].toUpperCase() : '?',
+              style: const TextStyle(color: primary, fontWeight: FontWeight.bold),
+            ),
+          ),
+          title: Text(nom, style: const TextStyle(fontWeight: FontWeight.w600)),
+          subtitle: Text(
+            [c['telephone'] ?? '', if (animaux.isNotEmpty) '🐾 $animaux']
+                .where((s) => s.toString().isNotEmpty)
+                .join('\n'),
+          ),
+          isThreeLine: animaux.isNotEmpty,
+          onTap: () => Navigator.pop(context, c),
+        );
+      },
+    );
+  }
+}
