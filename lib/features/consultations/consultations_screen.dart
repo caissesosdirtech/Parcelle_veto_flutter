@@ -190,6 +190,66 @@ class _ConsultationsScreenState extends State<ConsultationsScreen> {
     }
   }
 
+  Future<void> _supprimerConsultation(int consultationId, bool isTerminee) async {
+    final bool? confirmer = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Row(
+          children: [
+            Icon(Icons.delete_outline_rounded, color: Colors.red, size: 26),
+            SizedBox(width: 8),
+            Text('Supprimer ?'),
+          ],
+        ),
+        content: Text(
+          isTerminee
+              ? 'Cette consultation terminée sera supprimée définitivement, '
+                  'avec son ordonnance et la vente liée.\n\n'
+                  'Les médicaments seront remis en stock.'
+              : 'Cette consultation et son ordonnance seront supprimées définitivement.',
+          style: const TextStyle(fontSize: 14),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Annuler', style: TextStyle(color: Colors.grey)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red.shade700,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            ),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Supprimer'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmer != true) return;
+    try {
+      final res = await _dio.post("consultations/api/$consultationId/supprimer/");
+      if (!mounted) return;
+      final restitue = res.data is Map ? (res.data['stock_restitue'] ?? 0) : 0;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(restitue is num && restitue > 0
+              ? 'Consultation supprimée. $restitue unité(s) remise(s) en stock.'
+              : 'Consultation supprimée.'),
+          backgroundColor: Colors.green,
+        ),
+      );
+      _loadConsultations();
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erreur de suppression : $e'), backgroundColor: Colors.red),
+      );
+    }
+  }
+
   void _showAddConsultationModal() {
     showModalBottomSheet(
       context: context,
@@ -450,6 +510,12 @@ class _ConsultationsScreenState extends State<ConsultationsScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
+                      IconButton(
+                        tooltip: 'Supprimer la consultation',
+                        icon: Icon(Icons.delete_outline_rounded, color: Colors.red.shade400),
+                        onPressed: () => _supprimerConsultation(consultationId, isTerminee),
+                      ),
+                      const Spacer(),
                       if (!isTerminee)
                         OutlinedButton.icon(
                           style: OutlinedButton.styleFrom(
