@@ -763,8 +763,16 @@ class _NouvelleConsultationModalState extends State<_NouvelleConsultationModal> 
           );
         }
 
+        // Numéro déjà connu : le serveur a rattaché la consultation au client existant
+        final bool clientExistant = data is Map && data['client_existant'] == true;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Consultation créée avec succès !'), backgroundColor: primary),
+          SnackBar(
+            content: Text(clientExistant
+                ? (data['message'] ?? 'Client déjà enregistré : consultation rattachée à sa fiche.').toString()
+                : 'Consultation créée avec succès !'),
+            backgroundColor: clientExistant ? const Color(0xFF0A7BD6) : primary,
+            duration: Duration(seconds: clientExistant ? 6 : 4),
+          ),
         );
       }
     } catch (e) {
