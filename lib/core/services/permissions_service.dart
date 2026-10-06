@@ -39,6 +39,7 @@ class PermissionsService {
   // ── CONSULTATIONS ─────────────────────────────────────────────────────────
   static bool get canTerminerConsultation => isDocteur;
   static bool get canGererOrdonnance => isDocteur;
+  static bool get canDeleteConsultation => isDocteur;
 
   // ── PHARMACIE ─────────────────────────────────────────────────────────────
   static bool get canEditMedicament => isDocteur;

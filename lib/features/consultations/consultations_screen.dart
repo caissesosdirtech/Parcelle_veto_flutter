@@ -3,6 +3,7 @@ import 'package:parcelles_veto_flutter/core/config/api_config.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'ordonnance_screen.dart';
+import 'package:parcelles_veto_flutter/core/services/permissions_service.dart';
 
 class ConsultationsScreen extends StatefulWidget {
   final bool autoOpenModal;
@@ -510,11 +511,13 @@ class _ConsultationsScreenState extends State<ConsultationsScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      IconButton(
-                        tooltip: 'Supprimer la consultation',
-                        icon: Icon(Icons.delete_outline_rounded, color: Colors.red.shade400),
-                        onPressed: () => _supprimerConsultation(consultationId, isTerminee),
-                      ),
+                      // Suppression réservée au docteur
+                      if (PermissionsService.canDeleteConsultation)
+                        IconButton(
+                          tooltip: 'Supprimer la consultation',
+                          icon: Icon(Icons.delete_outline_rounded, color: Colors.red.shade400),
+                          onPressed: () => _supprimerConsultation(consultationId, isTerminee),
+                        ),
                       const Spacer(),
                       if (!isTerminee)
                         OutlinedButton.icon(

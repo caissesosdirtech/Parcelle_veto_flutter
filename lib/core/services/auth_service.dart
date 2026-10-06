@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:parcelles_veto_flutter/core/config/api_config.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -40,7 +42,8 @@ class AuthService {
       // SimpleJWT renvoie le jeton d'accès dans 'access' (ou parfois 'token')
       final token = data['access'] ?? data['token'];
       final refresh = data['refresh'];
-      final role = data['role'] ?? 'DOCTOR';
+      // Rôle renvoyé par le serveur ; sinon lu dans le jeton lui-même
+      final role = data['role'] ?? _roleDepuisJeton(token?.toString()) ?? '';
 
       if (token == null) {
         throw DioException(
@@ -117,6 +120,20 @@ class AuthService {
   static Future<String?> getUsername() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_usernameKey);
+  }
+
+  /// Lit le champ "role" contenu dans un jeton JWT (partie centrale, base64).
+  static String? _roleDepuisJeton(String? jeton) {
+    if (jeton == null) return null;
+    try {
+      final parties = jeton.split('.');
+      if (parties.length != 3) return null;
+      final contenu = utf8.decode(base64Url.decode(base64Url.normalize(parties[1])));
+      final role = (jsonDecode(contenu) as Map<String, dynamic>)['role'];
+      return role?.toString();
+    } catch (_) {
+      return null;
+    }
   }
 
   static Future<String?> getRole() async {
