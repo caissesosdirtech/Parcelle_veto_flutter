@@ -16,6 +16,7 @@ import '../auth/login_screen.dart';
 import '../fournisseurs/fournisseurs_screen.dart';
 import '../ventes/vente_journaliere_screen.dart';
 import 'package:parcelles_veto_flutter/core/services/notification_router.dart';
+import '../parametres/parametres_screen.dart';
 
 // ─────────────────────────────────────────────
 // MODELE DE NOTIFICATION
@@ -196,7 +197,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   Future<void> _loadUser() async {
     final username = await AuthService.getUsername() ?? 'Utilisateur';
-    final role = await AuthService.getRole() ?? 'EMPLOYE';
+    final role = await AuthService.getRole() ?? '';
 
     if (!mounted) return;
     setState(() {
@@ -754,6 +755,12 @@ class _DashboardScreenState extends State<DashboardScreen>
                     icon: Icons.receipt_long_rounded,
                     title: "Vente du jour",
                     onTap: () => _navigateTo(const VenteJournaliereScreen()),
+                  ),
+                  const Divider(height: 16),
+                  _drawerItem(
+                    icon: Icons.settings_rounded,
+                    title: "Paramètres",
+                    onTap: () => _navigateTo(const ParametresScreen()),
                   ),
                 ],
               ),

@@ -3,7 +3,7 @@
 
 import 'auth_service.dart';
 
-enum UserRole { docteur, employe, inconnu }
+enum UserRole { docteur, assistant, pharmacien, inconnu }
 
 class PermissionsService {
   static UserRole? _role;
@@ -18,15 +18,17 @@ class PermissionsService {
     switch (r?.toUpperCase()) {
       case 'DOCTEUR':
         return UserRole.docteur;
-      case 'EMPLOYE':
-        return UserRole.employe;
+      case 'ASSISTANT':
+        return UserRole.assistant;
+      case 'PHARMACIEN':
+        return UserRole.pharmacien;
       default:
         return UserRole.inconnu;
     }
   }
 
   static bool get isDocteur => _role == UserRole.docteur;
-  static bool get isEmploye => _role == UserRole.employe;
+  static bool get isEmploye => _role == UserRole.assistant || _role == UserRole.pharmacien;
 
   // ── DASHBOARD ─────────────────────────────────────────────────────────────
   static bool get canSeeValeurStock => isDocteur;
@@ -40,6 +42,9 @@ class PermissionsService {
   static bool get canTerminerConsultation => isDocteur;
   static bool get canGererOrdonnance => isDocteur;
   static bool get canDeleteConsultation => isDocteur;
+
+  // ── PARAMÈTRES ───────────────────────────────────────────────────────────
+  static bool get canGererUtilisateurs => isDocteur;
 
   // ── PHARMACIE ─────────────────────────────────────────────────────────────
   static bool get canEditMedicament => isDocteur;
