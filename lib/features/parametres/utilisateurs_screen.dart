@@ -92,7 +92,10 @@ class _UtilisateursScreenState extends State<UtilisateursScreen> {
     final tel = TextEditingController(text: u?['telephone'] ?? '');
     final identifiant = TextEditingController();
     final mdp = TextEditingController();
+    // Un rôle inconnu (ancien « EMPLOYE »…) n'est pas présélectionné :
+    // la liste exige que la valeur fasse partie des choix proposés.
     String role = (u?['role'] ?? '').toString();
+    if (!_roles.any((r) => r['code'] == role)) role = '';
     final estMoi = u != null && u['id'] == _moi;
     bool envoi = false;
 
