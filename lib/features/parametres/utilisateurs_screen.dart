@@ -367,69 +367,135 @@ class _UtilisateursScreenState extends State<UtilisateursScreen> {
     final estMoi = u['id'] == _moi;
     final role = (u['role'] ?? '').toString();
     final nom = (u['nom_complet'] ?? u['username'] ?? '').toString();
+    final tel = (u['telephone'] ?? '').toString();
     final couleur = _couleurRole(role);
-    return Opacity(
-      opacity: actif ? 1 : 0.55,
-      child: Card(
-        elevation: 0,
-        margin: const EdgeInsets.only(bottom: 10),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(14, 12, 6, 12),
-          child: Row(
-            children: [
-              CircleAvatar(
-                radius: 22,
-                backgroundColor: couleur.withValues(alpha: 0.12),
-                child: Text(nom.isNotEmpty ? nom[0].toUpperCase() : '?',
-                    style: TextStyle(color: couleur, fontWeight: FontWeight.w800)),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(estMoi ? '$nom (vous)' : nom,
-                        style: const TextStyle(fontWeight: FontWeight.w700, color: encre)),
-                    const SizedBox(height: 2),
-                    Text('@${u['username']}${(u['telephone'] ?? '').toString().isNotEmpty ? ' · ${u['telephone']}' : ''}',
-                        style: const TextStyle(fontSize: 12, color: gris)),
-                    const SizedBox(height: 6),
-                    Wrap(spacing: 6, children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                        decoration: BoxDecoration(
-                          color: couleur.withValues(alpha: 0.12),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text((u['role_libelle'] ?? '').toString(),
-                            style: TextStyle(
-                                fontSize: 11, fontWeight: FontWeight.w700, color: couleur)),
-                      ),
-                      if (!actif)
-                        const Text('Désactivé',
-                            style: TextStyle(
-                                fontSize: 11, fontWeight: FontWeight.w700, color: Colors.red)),
-                    ]),
-                  ],
-                ),
-              ),
-              PopupMenuButton<String>(
-                onSelected: (choix) {
-                  if (choix == 'modifier') _ouvrirFormulaire(u);
-                  if (choix == 'mdp') _reinitialiser(u);
-                  if (choix == 'actif') _basculer(u);
-                },
-                itemBuilder: (_) => [
-                  const PopupMenuItem(value: 'modifier', child: Text('Modifier')),
-                  const PopupMenuItem(value: 'mdp', child: Text('Nouveau mot de passe')),
-                  if (!estMoi)
-                    PopupMenuItem(
-                      value: 'actif',
-                      child: Text(actif ? 'Désactiver' : 'Réactiver',
-                          style: TextStyle(color: actif ? Colors.red : null)),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: [
+          BoxShadow(color: encre.withValues(alpha: 0.05), blurRadius: 14, offset: const Offset(0, 4)),
+        ],
+      ),
+      child: Column(
+        children: [
+          // ── Identité ──
+          Opacity(
+            opacity: actif ? 1 : 0.55,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(14, 14, 14, 12),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    radius: 23,
+                    backgroundColor: couleur.withValues(alpha: 0.12),
+                    child: Text(nom.isNotEmpty ? nom[0].toUpperCase() : '?',
+                        style: TextStyle(color: couleur, fontWeight: FontWeight.w800, fontSize: 17)),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(estMoi ? '$nom (vous)' : nom,
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w800, color: encre, fontSize: 15)),
+                        const SizedBox(height: 2),
+                        Text(tel.isNotEmpty ? '@${u['username']} · $tel' : '@${u['username']}',
+                            style: const TextStyle(fontSize: 12.5, color: gris)),
+                        const SizedBox(height: 6),
+                        Wrap(spacing: 6, runSpacing: 4, children: [
+                          _pastille((u['role_libelle'] ?? '').toString(), couleur),
+                          _pastille(actif ? 'Actif' : 'Désactivé',
+                              actif ? const Color(0xFF15803D) : const Color(0xFFDC2626)),
+                        ]),
+                      ],
                     ),
+                  ),
                 ],
+              ),
+            ),
+          ),
+          const Divider(height: 1, color: Color(0xFFEEF2F7)),
+          // ── Actions ──
+          Padding(
+            padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
+            child: Row(
+              children: [
+                Expanded(
+                  child: _action(
+                    icone: Icons.edit_outlined,
+                    texte: 'Modifier',
+                    couleur: bleu,
+                    onTap: () => _ouvrirFormulaire(u),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: _action(
+                    icone: Icons.key_outlined,
+                    texte: 'Mot de passe',
+                    couleur: const Color(0xFF7C3AED),
+                    onTap: () => _reinitialiser(u),
+                  ),
+                ),
+                if (!estMoi) ...[
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _action(
+                      icone: actif ? Icons.block_rounded : Icons.check_circle_outline_rounded,
+                      texte: actif ? 'Désactiver' : 'Réactiver',
+                      couleur: actif ? const Color(0xFFDC2626) : const Color(0xFF15803D),
+                      onTap: () => _basculer(u),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _pastille(String texte, Color couleur) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+        decoration: BoxDecoration(
+          color: couleur.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Text(texte,
+            style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: couleur)),
+      );
+
+  /// Bouton d'action compact, teinté de sa couleur.
+  Widget _action({
+    required IconData icone,
+    required String texte,
+    required Color couleur,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: couleur.withValues(alpha: 0.08),
+      borderRadius: BorderRadius.circular(11),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(11),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icone, size: 17, color: couleur),
+              const SizedBox(width: 5),
+              Flexible(
+                child: Text(
+                  texte,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w700, color: couleur),
+                ),
               ),
             ],
           ),
