@@ -65,4 +65,20 @@ class ParametresApi {
         data: {'ancien': ancien, 'password': nouveau});
     return (r.data['message'] ?? 'Mot de passe changé.').toString();
   }
+
+  /// Réglages de la clinique : {clinique: {...}, modifiable: bool}
+  static Future<Map<String, dynamic>> clinique() async {
+    final r = await _dio.get('parametres/api/clinique/');
+    return Map<String, dynamic>.from(r.data as Map);
+  }
+
+  /// Enregistre les réglages ; renvoie (réglages à jour, message).
+  static Future<(Map<String, dynamic>, String)> enregistrerClinique(
+      Map<String, dynamic> donnees) async {
+    final r = await _dio.post('parametres/api/clinique/', data: donnees);
+    return (
+      Map<String, dynamic>.from(r.data['clinique'] as Map),
+      (r.data['message'] ?? 'Réglages enregistrés.').toString(),
+    );
+  }
 }

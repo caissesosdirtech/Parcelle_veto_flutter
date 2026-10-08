@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/services/auth_service.dart';
 import '../../core/services/permissions_service.dart';
 import '../auth/login_screen.dart';
+import 'clinique_screen.dart';
 import 'mon_compte_screen.dart';
 import 'parametres_api.dart';
 import 'utilisateurs_screen.dart';
@@ -141,8 +142,8 @@ class _ParametresScreenState extends State<ParametresScreen> {
                       icone: Icons.local_hospital_outlined,
                       couleur: const Color(0xFFF59E0B),
                       titre: 'Clinique',
-                      sousTitre: 'Coordonnées, documents, notifications',
-                      badge: 'Bientôt',
+                      sousTitre: 'Coordonnées, documents, stock, notifications',
+                      onTap: () => _ouvrir(const CliniqueScreen()),
                     ),
                   ]),
                 ],
