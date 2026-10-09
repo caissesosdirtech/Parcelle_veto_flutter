@@ -417,6 +417,31 @@ class _UtilisateursScreenState extends State<UtilisateursScreen> {
               ),
             ),
           ),
+          // ── Activité : dernière connexion et mot de passe ──
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 0, 14, 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _ligneActivite(
+                  Icons.login_rounded,
+                  'Connexion',
+                  u['derniere_connexion'] == null
+                      ? 'jamais'
+                      : _date(u['derniere_connexion'].toString()),
+                ),
+                const SizedBox(height: 4),
+                _ligneActivite(
+                  Icons.key_rounded,
+                  'Mot de passe',
+                  u['mdp_change_le'] == null
+                      ? 'jamais changé'
+                      : 'changé le ${_date(u['mdp_change_le'].toString())}',
+                  auteur: u['mdp_change_par']?.toString(),
+                ),
+              ],
+            ),
+          ),
           const Divider(height: 1, color: Color(0xFFEEF2F7)),
           // ── Actions ──
           Padding(
@@ -456,6 +481,41 @@ class _UtilisateursScreenState extends State<UtilisateursScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  /// « 09/10/2026 à 15:50 » (heure du téléphone).
+  String _date(String iso) {
+    final d = DateTime.tryParse(iso)?.toLocal();
+    if (d == null) return '—';
+    String deux(int n) => n.toString().padLeft(2, '0');
+    return '${deux(d.day)}/${deux(d.month)}/${d.year} à ${deux(d.hour)}:${deux(d.minute)}';
+  }
+
+  Widget _ligneActivite(IconData icone, String libelle, String valeur, {String? auteur}) {
+    final parLuiMeme = auteur == 'lui-même';
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icone, size: 15, color: gris),
+        const SizedBox(width: 6),
+        Expanded(
+          child: Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 6,
+            runSpacing: 2,
+            children: [
+              Text('$libelle : $valeur',
+                  style: const TextStyle(fontSize: 12.5, color: encre)),
+              if (auteur != null && auteur.isNotEmpty && auteur != '—')
+                parLuiMeme
+                    ? _pastille('par lui-même', const Color(0xFFB45309))
+                    : Text('par $auteur',
+                        style: const TextStyle(fontSize: 12, color: gris)),
+            ],
+          ),
+        ),
+      ],
     );
   }
 

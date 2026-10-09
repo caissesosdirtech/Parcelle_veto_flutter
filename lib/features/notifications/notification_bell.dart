@@ -167,6 +167,11 @@ class _NotificationBellWidgetState extends State<NotificationBellWidget> {
           backgroundColor: Color(0xFFFFE0B2), // orange clair (orange.shade100)
           child: Icon(Icons.calendar_today, color: Colors.orange),
         );
+      case 'compte':
+        return const CircleAvatar(
+          backgroundColor: Color(0xFFEDE9FE), // violet clair
+          child: Icon(Icons.key_rounded, color: Color(0xFF7C3AED)),
+        );
       default:
         return const CircleAvatar(
           backgroundColor: Colors.grey,

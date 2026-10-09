@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../api/api_client.dart';
 import '../../features/consultations/consultations_screen.dart';
+import '../../features/parametres/utilisateurs_screen.dart';
 import '../../features/pharmacie/pharmacie_screen.dart';
 import '../../features/rendez_vous/rendez_vous_screen.dart';
 import '../../screens/vente_detail_bottom_sheet.dart';
@@ -15,6 +16,7 @@ import '../../screens/vente_detail_bottom_sheet.dart';
 ///   - type = consultation → écran des consultations
 ///   - type = rdv          → écran des rendez-vous
 ///   - type = stock        → écran de la pharmacie
+///   - type = compte       → liste des utilisateurs (mot de passe changé)
 ///   - autre / inconnu     → le texte complet de la notification
 ///
 /// Si l'app vient d'être lancée par la notification, l'ouverture attend
@@ -89,6 +91,11 @@ class NotificationRouter {
       case 'rdv':
         navigateur.push(MaterialPageRoute<void>(
           builder: (_) => const RendezVousScreen(),
+        ));
+        return;
+      case 'compte':
+        navigateur.push(MaterialPageRoute<void>(
+          builder: (_) => const UtilisateursScreen(),
         ));
         return;
       case 'stock':
