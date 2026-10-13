@@ -143,6 +143,33 @@ class _RendezVousScreenState extends State<RendezVousScreen> {
   }
 
   Future<void> _changeStatut(int id, String nouveauStatut, bool isManuel) async {
+    // Terminer verrouille définitivement le rendez-vous : on demande confirmation
+    if (nouveauStatut == 'TERMINE') {
+      final ok = await showDialog<bool>(
+        context: context,
+        builder: (dialogContext) => AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+          title: const Text('Terminer ce rendez-vous ?'),
+          content: const Text(
+              'Il sera verrouillé : son statut ne pourra plus être modifié.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext, false),
+              child: const Text('Annuler'),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                foregroundColor: Colors.white,
+              ),
+              onPressed: () => Navigator.pop(dialogContext, true),
+              child: const Text('Terminer'),
+            ),
+          ],
+        ),
+      );
+      if (ok != true) return;
+    }
     try {
       await _dio.post("consultations/api/rdv/$id/statut/", data: {
         'statut': nouveauStatut,
@@ -151,17 +178,25 @@ class _RendezVousScreenState extends State<RendezVousScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Statut mis à jour : $nouveauStatut'),
+            content: Text(nouveauStatut == 'TERMINE'
+                ? 'Rendez-vous terminé : il est maintenant verrouillé.'
+                : 'Statut mis à jour : $nouveauStatut'),
             backgroundColor: Colors.green,
           ),
         );
       }
       _loadRendezVous();
     } catch (e) {
+      // Message du serveur (ex. rendez-vous verrouillé) plutôt que l'erreur brute
+      String message = 'Erreur de mise à jour.';
+      if (e is DioException && e.response?.data is Map && e.response!.data['error'] != null) {
+        message = e.response!.data['error'].toString();
+        if (e.response?.statusCode == 409) _loadRendezVous();
+      }
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Erreur de mise à jour: $e'),
+            content: Text(message),
             backgroundColor: Colors.red,
           ),
         );
@@ -671,6 +706,8 @@ class _RendezVousScreenState extends State<RendezVousScreen> {
 
     final statusColor = _getStatutColor(statut);
     final bool isPassed = _isRendezVousPassed(dateRaw);
+    // Un rendez-vous terminé est verrouillé (le serveur refuse toute modification)
+    final bool isTermine = statut == 'TERMINE' || statut == 'TERMINÉ';
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -757,22 +794,24 @@ class _RendezVousScreenState extends State<RendezVousScreen> {
           Text('Motif : $motif', style: const TextStyle(fontSize: 12, fontStyle: FontStyle.italic, color: Colors.black54)),
           const SizedBox(height: 12),
 
-          // 🔒 Verrouillage des actions si la date est passée
-          if (isPassed)
+          // 🔒 Verrouillage des actions : rendez-vous terminé ou date passée
+          if (isTermine || isPassed)
             Container(
               padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
               decoration: BoxDecoration(
                 color: Colors.grey.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(6),
               ),
-              child: const Row(
+              child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.lock_outline, size: 14, color: Colors.grey),
-                  SizedBox(width: 6),
+                  const Icon(Icons.lock_outline, size: 14, color: Colors.grey),
+                  const SizedBox(width: 6),
                   Text(
-                    'Rendez-vous passé (Verrouillé)',
-                    style: TextStyle(fontSize: 11, fontStyle: FontStyle.italic, color: Colors.grey),
+                    isTermine
+                        ? 'Rendez-vous terminé (verrouillé)'
+                        : 'Rendez-vous passé (verrouillé)',
+                    style: const TextStyle(fontSize: 11, fontStyle: FontStyle.italic, color: Colors.grey),
                   ),
                 ],
               ),
