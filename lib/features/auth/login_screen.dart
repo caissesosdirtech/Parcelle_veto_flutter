@@ -105,6 +105,8 @@ class _LoginScreenState extends State<LoginScreen>
         _loading = false;
         if (e.response?.statusCode == 401) {
           _error = 'Identifiant ou mot de passe incorrect.';
+        } else if (e.response?.statusCode == 429) {
+          _error = 'Trop de tentatives de connexion.\nRéessayez dans 15 minutes.';
         } else if (e.type == DioExceptionType.connectionTimeout ||
             e.type == DioExceptionType.receiveTimeout ||
             e.type == DioExceptionType.connectionError) {
