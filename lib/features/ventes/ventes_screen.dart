@@ -419,9 +419,13 @@ class _VentesScreenState extends State<VentesScreen> {
                         children: [
                           const Icon(Icons.access_time, size: 12, color: Colors.grey),
                           const SizedBox(width: 4),
-                          Text(
-                            date.toString(),
-                            style: const TextStyle(fontSize: 11, color: Colors.grey),
+                          Flexible(
+                            child: Text(
+                              date.toString(),
+                              style: const TextStyle(fontSize: 11, color: Colors.grey),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
                           const SizedBox(width: 8),
                           const Icon(Icons.inventory_2_outlined, size: 12, color: Colors.grey),
