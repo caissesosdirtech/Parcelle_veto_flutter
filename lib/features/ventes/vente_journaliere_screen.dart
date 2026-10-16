@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import '../../core/services/export_service.dart';
 import '../../core/services/auth_service.dart';
+import '../../core/services/permissions_service.dart';
 
 class VenteJournaliereScreen extends StatefulWidget {
   const VenteJournaliereScreen({super.key});
@@ -25,7 +26,14 @@ class _VenteJournaliereScreenState extends State<VenteJournaliereScreen> {
   @override
   void initState() {
     super.initState();
-    _loadData();
+    // Réservé au docteur et au super-administrateur. Garde-fou côté app :
+    // le serveur refuse de toute façon l'accès aux autres rôles (403).
+    if (!PermissionsService.isDocteur) {
+      _loading = false;
+      _error = "Accès réservé au docteur.";
+    } else {
+      _loadData();
+    }
   }
 
   // ── HELPER DIO AVEC AUTHENTIFICATION ────────────────────────────────────────
@@ -60,6 +68,18 @@ class _VenteJournaliereScreenState extends State<VenteJournaliereScreen> {
       });
       setState(() {
         _data = res.data;
+        _loading = false;
+      });
+    } on DioException catch (e) {
+      final code = e.response?.statusCode;
+      setState(() {
+        if (code == 403) {
+          _error = "Accès réservé au docteur.";
+        } else if (code == 401) {
+          _error = "Session expirée. Reconnectez-vous.";
+        } else {
+          _error = "Erreur de chargement : ${e.message}";
+        }
         _loading = false;
       });
     } catch (e) {

@@ -751,11 +751,13 @@ class _DashboardScreenState extends State<DashboardScreen>
                     title: "Fournisseurs",
                     onTap: () => _navigateTo(const FournisseursScreen()),
                   ),
-                  _drawerItem(
-                    icon: Icons.receipt_long_rounded,
-                    title: "Vente du jour",
-                    onTap: () => _navigateTo(const VenteJournaliereScreen()),
-                  ),
+                  // Vente du jour : réservée au docteur et au super-admin
+                  if (PermissionsService.isDocteur)
+                    _drawerItem(
+                      icon: Icons.receipt_long_rounded,
+                      title: "Vente du jour",
+                      onTap: () => _navigateTo(const VenteJournaliereScreen()),
+                    ),
                   const Divider(height: 16),
                   _drawerItem(
                     icon: Icons.settings_rounded,
@@ -1479,7 +1481,11 @@ class _DashboardScreenState extends State<DashboardScreen>
           children: [
             Expanded(
               child: GestureDetector(
-                onTap: () => _navigateTo(const VenteJournaliereScreen()),
+                // Le détail de la vente du jour est réservé au docteur ;
+                // pour les autres, la tuile reste affichée mais non cliquable.
+                onTap: PermissionsService.isDocteur
+                    ? () => _navigateTo(const VenteJournaliereScreen())
+                    : null,
                 child: _StatTile(
                   icon: Icons.account_balance_wallet_rounded,
                   title: "Ventes",
