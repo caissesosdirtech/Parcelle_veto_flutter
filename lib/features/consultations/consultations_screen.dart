@@ -898,7 +898,7 @@ class _NouvelleConsultationModalState extends State<_NouvelleConsultationModal> 
               loadingClients
                   ? const LinearProgressIndicator(color: primary)
                   : DropdownButtonFormField<String>(
-                value: selectedClientId,
+                initialValue: selectedClientId,
                 isExpanded: true,
                 decoration: InputDecoration(
                   labelText: "Sélectionner un client",
@@ -949,7 +949,7 @@ class _NouvelleConsultationModalState extends State<_NouvelleConsultationModal> 
               const SizedBox(height: 12),
               if (selectedClientId != null)
                 DropdownButtonFormField<String>(
-                  value: clientAnimaux.any((a) => a['id'].toString() == selectedAnimalId) ? selectedAnimalId : "__new__",
+                  initialValue: clientAnimaux.any((a) => a['id'].toString() == selectedAnimalId) ? selectedAnimalId : "__new__",
                   isExpanded: true,
                   decoration: InputDecoration(
                     labelText: "Animal concerné",
@@ -1059,7 +1059,7 @@ class _NouvelleConsultationModalState extends State<_NouvelleConsultationModal> 
                 children: [
                   Expanded(
                     child: DropdownButtonFormField<String>(
-                      value: animalEspece,
+                      initialValue: animalEspece,
                       decoration: InputDecoration(
                         labelText: "Espèce",
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
@@ -1077,7 +1077,7 @@ class _NouvelleConsultationModalState extends State<_NouvelleConsultationModal> 
                   const SizedBox(width: 8),
                   Expanded(
                     child: DropdownButtonFormField<String>(
-                      value: animalSexe,
+                      initialValue: animalSexe,
                       decoration: InputDecoration(
                         labelText: "Sexe",
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
@@ -1094,7 +1094,7 @@ class _NouvelleConsultationModalState extends State<_NouvelleConsultationModal> 
               ),
               const SizedBox(height: 12),
               DropdownButtonFormField<String>(
-                value: animalRace,
+                initialValue: animalRace,
                 isExpanded: true,
                 decoration: InputDecoration(
                   labelText: "Race",
@@ -1134,7 +1134,7 @@ class _NouvelleConsultationModalState extends State<_NouvelleConsultationModal> 
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField<String>(
-              value: lieu,
+              initialValue: lieu,
               decoration: InputDecoration(
                 labelText: "Lieu de consultation",
                 prefixIcon: const Icon(Icons.place_outlined, color: primary),

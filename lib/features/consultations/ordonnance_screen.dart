@@ -238,7 +238,7 @@ class _OrdonnanceScreenState extends State<OrdonnanceScreen> {
                     ),
                     const SizedBox(height: 12),
                     DropdownButtonFormField(
-                      value: selectedMedId,
+                      initialValue: selectedMedId,
                       isExpanded: true,
                       decoration: const InputDecoration(
                         labelText: "Sélectionner un médicament",

@@ -26,7 +26,7 @@ class ApiClient {
   );
 }
 
-/// Ajoute « Authorization: Bearer <jeton> » à chaque requête.
+/// Ajoute `Authorization: Bearer <jeton>` à chaque requête.
 /// Sur une erreur 401 : rafraîchit le jeton une fois et relance la requête ;
 /// si la session est expirée, déconnecte et affiche l'écran de connexion.
 class AuthInterceptor extends Interceptor {

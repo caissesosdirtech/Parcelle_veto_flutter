@@ -188,7 +188,7 @@ class _UtilisateursScreenState extends State<UtilisateursScreen> {
                               try {
                                 final msg = creation
                                     ? await ParametresApi.creer(donnees)
-                                    : await ParametresApi.modifier(u!['id'] as int, donnees);
+                                    : await ParametresApi.modifier(u['id'] as int, donnees);
                                 if (sheetContext.mounted) Navigator.pop(sheetContext, true);
                                 _message(msg);
                               } catch (e) {

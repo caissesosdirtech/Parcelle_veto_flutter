@@ -574,7 +574,7 @@ class _NouvelleVenteDirecteModalState extends State<_NouvelleVenteDirecteModal> 
                   const Text("Ajouter un produit", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 12),
                   DropdownButtonFormField<int>(
-                    value: selectedId,
+                    initialValue: selectedId,
                     isExpanded: true,
                     decoration: const InputDecoration(labelText: "Article / Produit", border: OutlineInputBorder()),
                     items: medicamentsDisponibles.map((m) {
@@ -739,7 +739,7 @@ class _NouvelleVenteDirecteModalState extends State<_NouvelleVenteDirecteModal> 
               loadingClients
                   ? const LinearProgressIndicator()
                   : DropdownButtonFormField<String>(
-                value: selectedClientId,
+                initialValue: selectedClientId,
                 isExpanded: true,
                 decoration: const InputDecoration(labelText: "Client", border: OutlineInputBorder()),
                 items: clients.map((c) {
